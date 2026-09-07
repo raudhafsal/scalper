@@ -1,0 +1,64 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  /* Dark, professional trading-terminal palette (this app is dark-first by design) */
+  --background: 222 47% 6%;
+  --foreground: 210 20% 92%;
+  --surface: 222 40% 9%;
+  --surface-2: 222 35% 12%;
+  --border: 222 20% 18%;
+  --muted: 222 20% 16%;
+  --muted-foreground: 215 14% 60%;
+  --accent: 199 89% 55%;
+  --accent-foreground: 222 47% 6%;
+  --profit: 152 69% 45%;
+  --loss: 0 72% 58%;
+  --warning: 38 92% 55%;
+  --danger: 0 84% 60%;
+  --info: 199 89% 55%;
+
+  --font-sans: 'Inter', system-ui, sans-serif;
+  --font-mono: 'JetBrains Mono', ui-monospace, monospace;
+}
+
+* {
+  border-color: hsl(var(--border));
+}
+
+html,
+body {
+  height: 100%;
+}
+
+body {
+  background: hsl(var(--background));
+  color: hsl(var(--foreground));
+  font-feature-settings: 'tnum' 1, 'cv02' 1;
+  /* Mobile safe areas */
+  padding-top: env(safe-area-inset-top);
+  padding-left: env(safe-area-inset-left);
+  padding-right: env(safe-area-inset-right);
+}
+
+::selection {
+  background: hsl(var(--accent) / 0.3);
+}
+
+/* Thin scrollbars for a dense terminal feel */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: hsl(var(--border));
+  border-radius: 8px;
+}
+
+.tabular-nums {
+  font-variant-numeric: tabular-nums;
+}
