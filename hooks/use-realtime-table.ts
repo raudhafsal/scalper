@@ -18,10 +18,26 @@ export function useRealtimeTable<T extends object>(
   const onChangeRef = useRef(onChange);
   onChangeRef.current = onChange;
 
+  // Supabase-js dedupes channels by topic string and returns the SAME
+  // channel object to every caller that asks for the same topic. If two
+  // components subscribe to the same table+filter (e.g. two widgets both
+  // watching `trading_state` for the current user), the second one would
+  // get back a channel the first has already called `.subscribe()` on, and
+  // `.on()` throws ("cannot add postgres_changes callbacks ... after
+  // subscribe()"). A unique suffix per hook instance keeps every caller on
+  // its own channel/socket subscription so this can never collide.
+  const instanceIdRef = useRef<string>();
+  if (!instanceIdRef.current) {
+    instanceIdRef.current =
+      typeof crypto !== 'undefined' && 'randomUUID' in crypto
+        ? crypto.randomUUID()
+        : Math.random().toString(36).slice(2);
+  }
+
   useEffect(() => {
     const supabase = createClient();
     const channel = supabase
-      .channel(`realtime:${table}:${filter ?? 'all'}`)
+      .channel(`realtime:${table}:${filter ?? 'all'}:${instanceIdRef.current}`)
       .on(
         'postgres_changes',
         { event: '*', schema: 'public', table, filter },
